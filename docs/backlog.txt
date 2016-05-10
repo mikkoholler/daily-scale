@@ -1,5 +1,5 @@
 DAILY SCALE
 
-- get data from Heia
++ get data from Heia
 - sent data to Heia
 - sent data to HealthKit

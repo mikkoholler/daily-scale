@@ -11,29 +11,73 @@ import UIKit
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     let heiaHandler = HeiaHandler()
-    let feedTableView = UITableView()
     var weights = [Weight]()
+    var weight = 75.0
+    
+    let weightTableView = UITableView()
+    let weightInputView = UIView()
+    let weightTextLabel = UILabel()
+    let weightLabel = UILabel()
+    let weightButton = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = UIColor.lightGrayColor()
-        view.addSubview(feedTableView)
 
-        feedTableView.backgroundColor = UIColor.whiteColor()
-//        feedTableView.separatorStyle = .None
-        feedTableView.rowHeight = UITableViewAutomaticDimension
-        feedTableView.estimatedRowHeight = 75
-        feedTableView.allowsSelection = false
+        view.addSubview(weightInputView)
+        view.addSubview(weightTableView)
 
-        feedTableView.translatesAutoresizingMaskIntoConstraints = false
-        feedTableView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 20).active = true         // status bar height
-        feedTableView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-        feedTableView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
-        feedTableView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: -49).active = true   // tab bar height
+        weightInputView.backgroundColor = UIColor.whiteColor()
+
+        weightInputView.translatesAutoresizingMaskIntoConstraints = false
+        weightInputView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 20).active = true            // status bar height
+        weightInputView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
+        weightInputView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+        weightInputView.heightAnchor.constraintEqualToConstant(100).active = true
+
+        weightInputView.addSubview(weightTextLabel)
+        weightInputView.addSubview(weightLabel)
+        weightInputView.addSubview(weightButton)
         
-        feedTableView.delegate = self
-        feedTableView.dataSource = self
+        // looks
+        weightTextLabel.text = "Enter weight"
+        weightTextLabel.textColor = UIColor.blackColor()
+
+        weightLabel.font = weightLabel.font.fontWithSize(48)
+        weightLabel.text = String(format:"%.1f", weight)
+
+        weightButton.setTitle("Save", forState: .Normal)
+        weightButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        weightButton.setTitleColor(UIColor.grayColor(), forState: .Highlighted)
+
+        // layout
+        weightTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        weightTextLabel.topAnchor.constraintEqualToAnchor(weightInputView.topAnchor, constant: 10).active = true
+        weightTextLabel.leftAnchor.constraintEqualToAnchor(weightInputView.leftAnchor, constant: 10).active = true
+
+        weightLabel.translatesAutoresizingMaskIntoConstraints = false
+        weightLabel.centerXAnchor.constraintEqualToAnchor(weightInputView.centerXAnchor).active = true
+        weightLabel.centerYAnchor.constraintEqualToAnchor(weightInputView.centerYAnchor).active = true
+        
+        weightButton.translatesAutoresizingMaskIntoConstraints = false
+        weightButton.bottomAnchor.constraintEqualToAnchor(weightInputView.bottomAnchor, constant: -10).active = true
+        weightButton.rightAnchor.constraintEqualToAnchor(weightInputView.rightAnchor, constant: -10).active = true
+
+        weightTableView.backgroundColor = UIColor.whiteColor()
+//        feedTableView.separatorStyle = .None
+        weightTableView.rowHeight = UITableViewAutomaticDimension
+        weightTableView.estimatedRowHeight = 75
+        weightTableView.allowsSelection = false
+
+        weightTableView.translatesAutoresizingMaskIntoConstraints = false
+        weightTableView.topAnchor.constraintEqualToAnchor(weightInputView.bottomAnchor, constant: 10).active = true
+        weightTableView.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
+        weightTableView.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
+        weightTableView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true   // tab bar height: ", constant: -49"
+        
+        weightTableView.delegate = self
+        weightTableView.dataSource = self
     }
 
     // Conforming to UITableViewDataSource
@@ -53,9 +97,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func getData() {
         heiaHandler.getWeights() { weights in
             self.weights = weights
-            self.feedTableView.reloadData()
-
-            print("Got \(weights.count) weights")
+            self.weightTableView.reloadData()
+            
+            print("Got \(weights.count) items")
         }
     }
     
