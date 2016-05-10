@@ -12,6 +12,8 @@
 		0DC616F91CE1ADFC008D3508 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DC616F71CE1ADFC008D3508 /* Main.storyboard */; };
 		0DC616FB1CE1ADFC008D3508 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DC616FA1CE1ADFC008D3508 /* Assets.xcassets */; };
 		0DC616FE1CE1ADFC008D3508 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DC616FC1CE1ADFC008D3508 /* LaunchScreen.storyboard */; };
+		0DC617061CE23DB5008D3508 /* HeiaHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC617051CE23DB5008D3508 /* HeiaHandler.swift */; };
+		0DC617081CE23E20008D3508 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC617071CE23E20008D3508 /* Secrets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		0DC616FA1CE1ADFC008D3508 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0DC616FD1CE1ADFC008D3508 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0DC616FF1CE1ADFC008D3508 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0DC617051CE23DB5008D3508 /* HeiaHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeiaHandler.swift; sourceTree = "<group>"; };
+		0DC617071CE23E20008D3508 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +59,8 @@
 			isa = PBXGroup;
 			children = (
 				0DC616F31CE1ADFC008D3508 /* AppDelegate.swift */,
+				0DC617051CE23DB5008D3508 /* HeiaHandler.swift */,
+				0DC617071CE23E20008D3508 /* Secrets.swift */,
 				0DC616F51CE1ADFC008D3508 /* ViewController.swift */,
 				0DC616F71CE1ADFC008D3508 /* Main.storyboard */,
 				0DC616FA1CE1ADFC008D3508 /* Assets.xcassets */,
@@ -136,7 +142,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0DC616F61CE1ADFC008D3508 /* ViewController.swift in Sources */,
+				0DC617081CE23E20008D3508 /* Secrets.swift in Sources */,
 				0DC616F41CE1ADFC008D3508 /* AppDelegate.swift in Sources */,
+				0DC617061CE23DB5008D3508 /* HeiaHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
