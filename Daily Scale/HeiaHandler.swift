@@ -35,4 +35,51 @@ class HeiaHandler {
         }
         task.resume()
     }
+    
+    func getWeights(completion: ([Weight]) -> ()) {
+        var feed = [Weight]()
+
+        login() { (token) in
+            let request = NSMutableURLRequest()
+            let params = "year=2016&page=1&per_page=100&access_token=\(token)"
+            let components = NSURLComponents(string: "https://api.heiaheia.com/v2/items")
+            components?.query = params
+        
+            request.HTTPMethod = "GET"
+            request.URL = components?.URL
+
+            let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
+                do {
+                    if let jsonObject = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? Array<[String:AnyObject]> {
+                        feed = jsonObject
+                            .filter { $0["kind"] as! String == "Weight" }
+                            .map { (let item) -> Weight in
+                                    return self.parse(item)
+                            }
+                    }
+                } catch let e {
+                    print(e)
+                }
+
+                NSOperationQueue.mainQueue().addOperationWithBlock {
+                    completion(feed)
+                }
+            }
+            task.resume()
+        }
+    }
+
+    func parse(item: [String:AnyObject]) -> Weight {
+        var weight = Weight()
+        if let entry = item["entry"] as? [String:AnyObject] {
+            if let date = entry["date"] as? String {
+                weight.date = date
+            }
+            if let value = entry["value"] as? Double {
+                weight.weight = value
+            }
+        }
+        return weight
+    }
+
 }

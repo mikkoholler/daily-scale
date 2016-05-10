@@ -10,8 +10,9 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    let heiaHandler = HeiaHandler()
     let feedTableView = UITableView()
-    let feed = [76.2, 77.8, 77.4]
+    var weights = [Weight]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,18 +38,27 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     // Conforming to UITableViewDataSource
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return feed.count
+        return weights.count
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
         let row = indexPath.row
         
-        cell.textLabel?.text = String(feed[row])
+        cell.textLabel?.text = weights[row].date + ": " + String(weights[row].weight)
         
         return cell
     }
 
+    func getData() {
+        heiaHandler.getWeights() { weights in
+            self.weights = weights
+            self.feedTableView.reloadData()
+
+            print("Got \(weights.count) weights")
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
