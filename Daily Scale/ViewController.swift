@@ -13,7 +13,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     let heiaHandler = HeiaHandler()
     var weights = [Weight]()
     var weight = 75.0
-    
+    var priorPoint = CGPoint()
+    var logWeightEnabled = true
+
     let weightTableView = UITableView()
     let weightInputView = UIView()
     let weightTextLabel = UILabel()
@@ -64,6 +66,15 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         weightButton.bottomAnchor.constraintEqualToAnchor(weightInputView.bottomAnchor, constant: -10).active = true
         weightButton.rightAnchor.constraintEqualToAnchor(weightInputView.rightAnchor, constant: -10).active = true
 
+        // action
+        weightLabel.userInteractionEnabled = true
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed(_:)))
+        longPressRecognizer.minimumPressDuration = 0.1
+        weightLabel.addGestureRecognizer(longPressRecognizer)
+
+        weightButton.addTarget(self, action: #selector(buttonPressed), forControlEvents: UIControlEvents.TouchUpInside)
+
+
         weightTableView.backgroundColor = UIColor.whiteColor()
 //        feedTableView.separatorStyle = .None
         weightTableView.rowHeight = UITableViewAutomaticDimension
@@ -80,7 +91,43 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         weightTableView.dataSource = self
     }
 
-    // Conforming to UITableViewDataSource
+    func longPressed(sender: UILongPressGestureRecognizer) {
+        if (logWeightEnabled) {
+            let point = sender.locationInView(view)
+            let diff = priorPoint.y - point.y
+
+            if (sender.state == UIGestureRecognizerState.Began) {
+                priorPoint = point;
+                weightLabel.textColor = UIColor.lightGrayColor()
+            
+            } else if (sender.state == UIGestureRecognizerState.Changed) {
+                if (diff < -5) {
+                    weight -= 0.1;
+                    priorPoint = point;
+                } else if (diff > 5) {
+                    weight += 0.1;
+                    priorPoint = point;
+                }
+                weightLabel.text = String(format:"%.1f", weight);
+            
+            } else if (sender.state == UIGestureRecognizerState.Ended) {
+                weightLabel.textColor = UIColor.blackColor()
+            }
+        }
+    }
+
+    func buttonPressed() {
+        let adddate = NSDate()
+        let addweight = Double(weightLabel.text!)!         
+        
+        weights.insert(Weight(date: adddate, kg: addweight), atIndex: 0)
+//        healthHandler.saveWeight(adddate, weight: addweight)
+//        heiaHandler.saveWeight(adddate, weight: addweight)
+        weightTableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
+//        getData()
+    }
+
+
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return weights.count
     }
@@ -89,7 +136,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let cell = UITableViewCell()
         let row = indexPath.row
         
-        cell.textLabel?.text = weights[row].date + ": " + String(weights[row].weight)
+        cell.textLabel?.text = stringFromDate(weights[row].date) + ": " + String(weights[row].kg)
         
         return cell
     }
@@ -103,6 +150,15 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
+    func stringFromDate(date: NSDate) -> String {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        let dateInFormat = dateFormatter.stringFromDate(date)
+
+        return dateInFormat
+    }
+    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

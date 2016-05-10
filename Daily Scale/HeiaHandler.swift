@@ -73,13 +73,23 @@ class HeiaHandler {
         var weight = Weight()
         if let entry = item["entry"] as? [String:AnyObject] {
             if let date = entry["date"] as? String {
-                weight.date = date
+                weight.date = dateFromString(date)
             }
             if let value = entry["value"] as? Double {
-                weight.weight = value
+                weight.kg = value
             }
         }
         return weight
     }
+
+    func dateFromString(date: String) -> NSDate {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateInFormat = dateFormatter.dateFromString(date)
+
+        return dateInFormat!
+    }
+    
+
 
 }

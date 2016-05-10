@@ -9,6 +9,6 @@
 import Foundation
 
 struct Weight {
-    var date = String()
-    var weight = Double()
+    var date = NSDate()
+    var kg = Double()
 }
