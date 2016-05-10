@@ -16,10 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
-        let feedvc = FeedViewController()
+        let vc = ViewController()
         
         window = UIWindow()
-        window?.rootViewController = feedvc
+        window?.rootViewController = vc
         window?.makeKeyAndVisible()
 
         return true
