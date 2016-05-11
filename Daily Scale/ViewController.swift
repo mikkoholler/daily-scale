@@ -118,15 +118,14 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     func buttonPressed() {
         let adddate = NSDate()
-        let addweight = Double(weightLabel.text!)!         
+        let addweight = Double(weightLabel.text!)!
         
         weights.insert(Weight(date: adddate, kg: addweight), atIndex: 0)
 //        healthHandler.saveWeight(adddate, weight: addweight)
 //        heiaHandler.saveWeight(adddate, weight: addweight)
         weightTableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
-//        getData()
+        disableToday()
     }
-
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return weights.count
@@ -144,11 +143,37 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func getData() {
         heiaHandler.getWeights() { weights in
             self.weights = weights
-            self.weightTableView.reloadData()
-            
-            print("Got \(weights.count) items")
+            self.showData()
         }
     }
+
+    // needs animation
+    func showData() {
+        if (weights.count > 0) {
+            weight = weights[0].kg
+            weightLabel.text = String(format:"%.1f", weight)
+            
+            if (isToday(weights[0].date)) {
+                disableToday()
+            } else {
+                enableToday()
+            }
+        }
+        weightTableView.reloadData()
+    }
+    
+    func disableToday() {
+        weightTextLabel.text = "Today's weight"
+        weightButton.hidden = true
+        logWeightEnabled = false
+    }
+    
+    func enableToday() {
+        weightTextLabel.text = "Enter weight"
+        weightButton.hidden = false
+        logWeightEnabled = true
+    }
+
     
     func stringFromDate(date: NSDate) -> String {
         let dateFormatter = NSDateFormatter()
@@ -158,7 +183,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return dateInFormat
     }
     
+    func isToday(date: NSDate) -> Bool{
+        var isOK = false
 
+        let calendar = NSCalendar.currentCalendar()
+        let dateComponents = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month, NSCalendarUnit.Year], fromDate: date)
+        let todayComponents = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month, NSCalendarUnit.Year], fromDate: NSDate())
+
+        if (dateComponents.year == todayComponents.year && dateComponents.month == todayComponents.month && dateComponents.day == todayComponents.day) {
+            isOK = true
+        }
+
+        return isOK
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

@@ -1,5 +1,9 @@
 DAILY SCALE
 
 + get data from Heia
+- update today's weight and lock it
 - sent data to Heia
 - sent data to HealthKit
+- add handle for adjusting weight
+- weekly average
+- monthly average
