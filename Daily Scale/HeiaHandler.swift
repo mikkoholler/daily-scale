@@ -82,6 +82,25 @@ class HeiaHandler {
         return weight
     }
 
+    func saveWeight(date:NSDate, weight:Double) {
+        login() { (token) in
+            let dateFormatter = NSDateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let datestr = dateFormatter.stringFromDate(date)
+            let weightstr = String(format: "%.1f", weight)
+            
+            let params = "access_token=\(token)&date=\(datestr)&value=\(weightstr)&notes=&private=true"
+            let request = NSMutableURLRequest()
+            request.HTTPMethod = "POST"
+            request.HTTPBody = params.dataUsingEncoding(NSUTF8StringEncoding)
+            request.URL = NSURL(string: "https://api.heiaheia.com/v2/weights")
+ 
+            let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
+            }
+            task.resume()
+        }
+    }
+
     func dateFromString(date: String) -> NSDate {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
