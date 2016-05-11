@@ -11,6 +11,8 @@ import UIKit
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     let heiaHandler = HeiaHandler()
+    let healthHandler = HealthHandler()
+
     var weights = [Weight]()
     var weight = 75.0
     var priorPoint = CGPoint()
@@ -89,6 +91,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         weightTableView.delegate = self
         weightTableView.dataSource = self
+        
+        healthHandler.authorizeHealthKit()
     }
 
     func longPressed(sender: UILongPressGestureRecognizer) {
