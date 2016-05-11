@@ -125,7 +125,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let addweight = Double(weightLabel.text!)!
         
         weights.insert(Weight(date: adddate, kg: addweight), atIndex: 0)
-//        healthHandler.saveWeight(adddate, weight: addweight)
+        healthHandler.saveWeight(adddate, weight: addweight)
         heiaHandler.saveWeight(adddate, weight: addweight)
         weightTableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
         disableToday()
