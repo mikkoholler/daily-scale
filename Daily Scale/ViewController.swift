@@ -13,6 +13,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     let heiaHandler = HeiaHandler()
     let healthHandler = HealthHandler()
 
+    var authorized = false
+
     var weights = [Weight]()
     var weight = 75.0
     var priorPoint = CGPoint()
@@ -93,6 +95,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         weightTableView.dataSource = self
         
         healthHandler.authorizeHealthKit()
+        
+    }
+
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if (!authorized) {
+            authorized = true
+            let loginvc = LoginViewController()
+            presentViewController(loginvc, animated: true, completion: nil)
+        }
     }
 
     func longPressed(sender: UILongPressGestureRecognizer) {

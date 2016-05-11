@@ -10,6 +10,7 @@ import UIKit
 
 class LoginViewController: UIViewController {
 
+    let heiaHandler = HeiaHandler()
     let infolabel = UILabel()
     let userlabel = UILabel()
     let userTextField = UITextField()
@@ -70,8 +71,20 @@ class LoginViewController: UIViewController {
         loginButton.topAnchor.constraintEqualToAnchor(passwdTextField.bottomAnchor, constant: 15).active = true
         loginButton.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
 
+        loginButton.addTarget(self, action: #selector(buttonPressed), forControlEvents: UIControlEvents.TouchUpInside)
+
     }
     
+    func buttonPressed() {
+    /*
+        heiaHandler.loginWith(userTextField.text!, passwd: passwdTextField.text!) { success in
+            if (success) {
+                self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+            }
+        }
+    */
+        self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
