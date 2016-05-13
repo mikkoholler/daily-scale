@@ -17,9 +17,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
         let vc = ViewController()
+        let lvc = LoginViewController()
 
         window = UIWindow()
-        window?.rootViewController = vc
+        window?.rootViewController = lvc
         window?.makeKeyAndVisible()
 
         return true

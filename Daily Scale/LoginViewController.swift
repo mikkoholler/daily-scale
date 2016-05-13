@@ -11,6 +11,7 @@ import UIKit
 class LoginViewController: UIViewController {
 
     let infolabel = UILabel()
+    let errorlabel = UILabel()
     let userlabel = UILabel()
     let userTextField = UITextField()
     let passwdlabel = UILabel()
@@ -23,6 +24,7 @@ class LoginViewController: UIViewController {
         view.backgroundColor = UIColor.whiteColor()
 
         view.addSubview(infolabel)
+        view.addSubview(errorlabel)
         view.addSubview(userlabel)
         view.addSubview(userTextField)
         view.addSubview(passwdlabel)
@@ -32,12 +34,20 @@ class LoginViewController: UIViewController {
         infolabel.text = "Please enter your HeiaHeia credentials to log in. Your details will not be saved by Daily Scale."
         infolabel.numberOfLines = 0
         infolabel.textAlignment = .Center
+
+        errorlabel.text = "Unfortunately these credentials did not work. Please check them and try again."
+        errorlabel.numberOfLines = 0
+        errorlabel.textAlignment = .Center
         
         userlabel.text = "Username"
         passwdlabel.text = "Password"
         
         userTextField.borderStyle = .RoundedRect
+        userTextField.autocapitalizationType = .None
+        userTextField.autocorrectionType = .No
+        
         passwdTextField.borderStyle = .RoundedRect
+        passwdTextField.secureTextEntry = true
         
         loginButton.setTitle("Log in", forState: .Normal)
         loginButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
@@ -48,8 +58,13 @@ class LoginViewController: UIViewController {
         infolabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor, constant: 20).active = true
         infolabel.rightAnchor.constraintEqualToAnchor(view.rightAnchor, constant: -20).active = true
         
+        errorlabel.translatesAutoresizingMaskIntoConstraints = false
+        errorlabel.topAnchor.constraintEqualToAnchor(infolabel.bottomAnchor, constant: 20).active = true
+        errorlabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor, constant: 20).active = true
+        errorlabel.rightAnchor.constraintEqualToAnchor(view.rightAnchor, constant: -20).active = true
+        
         userlabel.translatesAutoresizingMaskIntoConstraints = false
-        userlabel.topAnchor.constraintEqualToAnchor(infolabel.bottomAnchor, constant: 20).active = true
+        userlabel.topAnchor.constraintEqualToAnchor(errorlabel.bottomAnchor, constant: 20).active = true
         userlabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor, constant: 12).active = true
         
         userTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -72,18 +87,20 @@ class LoginViewController: UIViewController {
 
         loginButton.addTarget(self, action: #selector(buttonPressed), forControlEvents: UIControlEvents.TouchUpInside)
 
+        errorlabel.hidden = true
     }
     
     func buttonPressed() {
         // check input
         HeiaHandler.instance.loginWith(userTextField.text!, passwd: passwdTextField.text!) { success in
             if (success) {
+                self.errorlabel.hidden = true
                 self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
             } else {
+                self.errorlabel.hidden = false
+                print("This is bullshit")
             }
         }
-        
-//        self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {
