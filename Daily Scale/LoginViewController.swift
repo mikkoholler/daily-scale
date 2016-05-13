@@ -10,7 +10,6 @@ import UIKit
 
 class LoginViewController: UIViewController {
 
-    let heiaHandler = HeiaHandler()
     let infolabel = UILabel()
     let userlabel = UILabel()
     let userTextField = UITextField()
@@ -76,14 +75,15 @@ class LoginViewController: UIViewController {
     }
     
     func buttonPressed() {
-    /*
-        heiaHandler.loginWith(userTextField.text!, passwd: passwdTextField.text!) { success in
+        // check input
+        HeiaHandler.instance.loginWith(userTextField.text!, passwd: passwdTextField.text!) { success in
             if (success) {
                 self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+            } else {
             }
         }
-    */
-        self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        
+//        self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {

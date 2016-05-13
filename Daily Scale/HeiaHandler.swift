@@ -10,29 +10,31 @@ import Foundation
 
 class HeiaHandler {
 
-    var token = ""
+    static let instance = HeiaHandler()
+    
     let defaults = NSUserDefaults.standardUserDefaults()
 
     func saveToken(new:String) {
-        token = new
-        defaults.setObject(token, forKey: "Token")
-        print("Token saved")
+        defaults.setObject(new, forKey: "Token")
+        print("Token saved.")
     }
     
-    func getToken() -> Bool {
-        var gotit = true
-        if (token.isEmpty) {
-            if let fetched = defaults.objectForKey("Token") as? String {
-                token = fetched
-            } else {
-                gotit = false
-            }
+    func getToken() -> String {
+        var token = ""
+        if let fetched = defaults.objectForKey("Token") as? String {
+            token = fetched
+            print("Got token.")
         }
-        return gotit
+        return token
     }
 
-    // should this stuff be static?
+    func deleteToken() {
+        defaults.removeObjectForKey("Token")
+        print("Token deleted.")
+    }
+
     func loginWith(user:String, passwd:String, completion: (Bool) -> ()) {
+        var success = false
         let secret = Secret()
         let params = "grant_type=password&username=\(user)&password=\(passwd)&client_id=\(secret.clientid)&client_secret=\(secret.secret)"
         
@@ -43,25 +45,29 @@ class HeiaHandler {
         
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
             do {
-                // TODO: crashes with no internets
-                if let jsonObject = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? [String:AnyObject] {
-                    if let token = jsonObject["access_token"] as? String {
-                        NSOperationQueue.mainQueue().addOperationWithBlock {
-                            self.saveToken(token)
-                            completion(true)
+                let statuscode = (response as! NSHTTPURLResponse).statusCode
+                if (statuscode == 200) {
+                    if let jsonObject = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? [String:AnyObject] {
+                        if let token = jsonObject["access_token"] as? String {
+                                self.saveToken(token)
+                                success = true
                         }
                     }
                 }
             } catch {
                 print("Could not tokenize")
             }
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                completion(success)
+            }
         }
         task.resume()
     }
     
-    func login(completion: (String) -> ()) {
-        if (getToken()) {
-            completion(self.token)
+    func login(completion: (String, Int?) -> ()) {
+        let token = getToken()
+        if (!token.isEmpty) {
+            completion(token, 200)
         } else {
             
             let secret = Secret()
@@ -74,12 +80,16 @@ class HeiaHandler {
             
             let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
                 do {
-                    // TODO: crashes with no internets
-                    if let jsonObject = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? [String:AnyObject] {
-                        if let token = jsonObject["access_token"] as? String {
-                            NSOperationQueue.mainQueue().addOperationWithBlock {
-                                self.saveToken(token)
-                                completion(token)
+                    if (error != nil) {
+                        completion("", error?.code)
+                    } else {
+                        // TODO: crashes with no internets
+                        if let jsonObject = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? [String:AnyObject] {
+                            if let token = jsonObject["access_token"] as? String {
+                                NSOperationQueue.mainQueue().addOperationWithBlock {
+                                    self.saveToken(token)
+                                    completion(token, 200)
+                                }
                             }
                         }
                     }
@@ -91,41 +101,45 @@ class HeiaHandler {
         }
     }
     
-    func getWeights(completion: ([Weight]) -> ()) {
+    func getWeights(completion: ([Weight], Int?) -> ()) {
         var feed = [Weight]()
+        var statuscode = 400
 
-        login() { (token) in
-            let request = NSMutableURLRequest()
-            let params = "year=2016&page=1&per_page=100&access_token=\(token)"
-            let components = NSURLComponents(string: "https://api.heiaheia.com/v2/items")
-            components?.query = params
+        let request = NSMutableURLRequest()
+        let params = "year=2016&page=1&per_page=100&access_token=\(getToken())"
+        let components = NSURLComponents(string: "https://api.heiaheia.com/v2/items")
+        components?.query = params
         
-            request.HTTPMethod = "GET"
-            request.URL = components?.URL
-
-            let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
-                do {
+        request.HTTPMethod = "GET"
+        request.URL = components?.URL
+        
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
+            do {
+                statuscode = (response as! NSHTTPURLResponse).statusCode
+                if (statuscode == 200) {
                     if let jsonObject = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? Array<[String:AnyObject]> {
                         feed = jsonObject
                             .filter { $0["kind"] as! String == "Weight" }
                             .map { (let item) -> Weight in
-                                    return self.parse(item)
-                            }
+                                return self.parse(item)
+                        }
                     }
-                } catch let e {
-                    print(e)
                 }
-
-                NSOperationQueue.mainQueue().addOperationWithBlock {
-                    completion(feed)
-                }
+            } catch let e {
+                print("Cannot \(e)")
+                statuscode = 400
             }
-            task.resume()
+  
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                completion(feed, statuscode)
+            }
         }
+        task.resume()
     }
 
     func parse(item: [String:AnyObject]) -> Weight {
         var weight = Weight()
+       
         if let entry = item["entry"] as? [String:AnyObject] {
             if let date = entry["date"] as? String {
                 weight.date = dateFromString(date)

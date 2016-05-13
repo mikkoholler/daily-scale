@@ -10,10 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    let heiaHandler = HeiaHandler()
     let healthHandler = HealthHandler()
-
-    var authorized = false
 
     var weights = [Weight]()
     var weight = 75.0
@@ -100,12 +97,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        if (!authorized) {
-            authorized = true
-            let loginvc = LoginViewController()
-            presentViewController(loginvc, animated: true, completion: nil)
-        }
+        getData()
     }
 
     func longPressed(sender: UILongPressGestureRecognizer) {
@@ -139,7 +131,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         weights.insert(Weight(date: adddate, kg: addweight), atIndex: 0)
         healthHandler.saveWeight(adddate, weight: addweight)
-        heiaHandler.saveWeight(adddate, weight: addweight)
+        HeiaHandler.instance.saveWeight(adddate, weight: addweight)
         weightTableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Fade)
         disableToday()
     }
@@ -158,10 +150,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
 
     func getData() {
-        heiaHandler.getWeights() { weights in
-            self.weights = weights
-            self.showData()
+        HeiaHandler.instance.getWeights() { (weights, errorcode) in
+            if (errorcode > 200) {
+                print("Not authorized")
+                self.showLogin()
+            } else {
+                self.weights = weights
+                self.showData()
+            }
         }
+    }
+
+    func showLogin() {
+        let loginvc = LoginViewController()
+        presentViewController(loginvc, animated: true, completion: nil)
     }
 
     // needs animation
