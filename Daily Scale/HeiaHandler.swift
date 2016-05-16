@@ -115,15 +115,19 @@ class HeiaHandler {
         
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
             do {
-                statuscode = (response as! NSHTTPURLResponse).statusCode
-                if (statuscode == 200) {
-                    if let jsonObject = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? Array<[String:AnyObject]> {
-                        feed = jsonObject
-                            .filter { $0["kind"] as! String == "Weight" }
-                            .map { (let item) -> Weight in
-                                return self.parse(item)
+                if let r = response as? NSHTTPURLResponse {
+                    statuscode = r.statusCode
+                    if (statuscode == 200) {
+                        if let jsonObject = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? Array<[String:AnyObject]> {
+                            feed = jsonObject
+                                .filter { $0["kind"] as! String == "Weight" }
+                                .map { (let item) -> Weight in
+                                    return self.parse(item)
+                                }
                         }
                     }
+                } else {
+                    statuscode = 400
                 }
             } catch let e {
                 print("Cannot \(e)")

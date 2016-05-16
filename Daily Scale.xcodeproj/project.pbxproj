@@ -18,6 +18,7 @@
 		0DC6170C1CE2F3E1008D3508 /* HealthHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC6170B1CE2F3E1008D3508 /* HealthHandler.swift */; };
 		0DC6170F1CE2F57E008D3508 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DC6170E1CE2F57E008D3508 /* HealthKit.framework */; };
 		0DC617111CE356B1008D3508 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC617101CE356B1008D3508 /* LoginViewController.swift */; };
+		0DEE134E1CE9C04600D39C93 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEE134D1CE9C04600D39C93 /* FirstViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		0DC6170D1CE2F57E008D3508 /* Daily Scale.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Daily Scale.entitlements"; sourceTree = "<group>"; };
 		0DC6170E1CE2F57E008D3508 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		0DC617101CE356B1008D3508 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		0DEE134D1CE9C04600D39C93 /* FirstViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +73,7 @@
 			children = (
 				0DC6170B1CE2F3E1008D3508 /* HealthHandler.swift */,
 				0DC616F31CE1ADFC008D3508 /* AppDelegate.swift */,
+				0DEE134D1CE9C04600D39C93 /* FirstViewController.swift */,
 				0DC617051CE23DB5008D3508 /* HeiaHandler.swift */,
 				0DC617091CE24047008D3508 /* Structs.swift */,
 				0DC617071CE23E20008D3508 /* Secrets.swift */,
@@ -165,6 +168,7 @@
 				0DC617111CE356B1008D3508 /* LoginViewController.swift in Sources */,
 				0DC6170C1CE2F3E1008D3508 /* HealthHandler.swift in Sources */,
 				0DC616F61CE1ADFC008D3508 /* ViewController.swift in Sources */,
+				0DEE134E1CE9C04600D39C93 /* FirstViewController.swift in Sources */,
 				0DC617081CE23E20008D3508 /* Secrets.swift in Sources */,
 				0DC6170A1CE24047008D3508 /* Structs.swift in Sources */,
 				0DC616F41CE1ADFC008D3508 /* AppDelegate.swift in Sources */,

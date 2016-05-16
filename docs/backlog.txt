@@ -4,6 +4,13 @@ DAILY SCALE
 + update today's weight and lock it
 + sent data to Heia
 + sent data to HealthKit
++ login
+  + save token, reuse token
+  + if fetch fails, do login
+- spinners
+- handle network error
 - add handle for adjusting weight
+- save data and make login voluntary
 - weekly average
 - monthly average
+- keychain?

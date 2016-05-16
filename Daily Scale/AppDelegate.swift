@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let lvc = LoginViewController()
 
         window = UIWindow()
-        window?.rootViewController = lvc
+        window?.rootViewController = vc
         window?.makeKeyAndVisible()
 
         return true

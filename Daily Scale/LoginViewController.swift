@@ -20,12 +20,14 @@ class LoginViewController: UIViewController {
     let passwdlabel = UILabel()
     let passwdTextField = UITextField()
     let loginButton = UIButton()
-
+    let spinner = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
         view.backgroundColor = UIColor.whiteColor()
         view.addSubview(stack)
+        view.addSubview(spinner)
 
         stack.axis = UILayoutConstraintAxis.Vertical
         stack.spacing = 20
@@ -51,11 +53,11 @@ class LoginViewController: UIViewController {
         passwdstack.addArrangedSubview(passwdlabel)
         passwdstack.addArrangedSubview(passwdTextField)
         
-        infolabel.text = "Please enter your HeiaHeia credentials to log in. Your details will not be saved by Daily Scale."
+        infolabel.text = "Please log in with your HeiaHeia credentials to save weights. Your details will not be saved by Daily Scale."
         infolabel.numberOfLines = 0
         infolabel.textAlignment = .Center
 
-        errorlabel.text = "Unfortunately these credentials did not work. Please check them and try again."
+        errorlabel.text = "Unfortunately the entered credentials did not work. Please check them and try again."
         errorlabel.numberOfLines = 0
         errorlabel.textAlignment = .Center
         errorlabel.textColor = UIColor.redColor()
@@ -72,42 +74,13 @@ class LoginViewController: UIViewController {
         loginButton.setTitle("Log in", forState: .Normal)
         loginButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
         loginButton.setTitleColor(UIColor.grayColor(), forState: .Highlighted)
-
-/*
-        infolabel.translatesAutoresizingMaskIntoConstraints = false
-//        infolabel.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 50).active = true     // status bar + padding
-        infolabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor, constant: 20).active = true
-        infolabel.rightAnchor.constraintEqualToAnchor(view.rightAnchor, constant: -20).active = true
-        
-        errorlabel.translatesAutoresizingMaskIntoConstraints = false
-//        errorlabel.topAnchor.constraintEqualToAnchor(infolabel.bottomAnchor, constant: 20).active = true
-        errorlabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor, constant: 20).active = true
-        errorlabel.rightAnchor.constraintEqualToAnchor(view.rightAnchor, constant: -20).active = true
-
-        userlabel.translatesAutoresizingMaskIntoConstraints = false
-        userlabel.topAnchor.constraintEqualToAnchor(errorlabel.bottomAnchor, constant: 20).active = true
-//        userlabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor, constant: 12).active = true
-
-        userTextField.translatesAutoresizingMaskIntoConstraints = false
-//        userTextField.topAnchor.constraintEqualToAnchor(userlabel.bottomAnchor, constant: 2).active = true
-        userTextField.leftAnchor.constraintEqualToAnchor(userlabel.leftAnchor, constant: -2).active = true
-        userTextField.rightAnchor.constraintEqualToAnchor(view.rightAnchor, constant: -10).active = true
-
-        passwdlabel.translatesAutoresizingMaskIntoConstraints = false
-        passwdlabel.topAnchor.constraintEqualToAnchor(userTextField.bottomAnchor, constant: 15).active = true
-//        passwdlabel.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-
-        passwdTextField.translatesAutoresizingMaskIntoConstraints = false
-//        passwdTextField.topAnchor.constraintEqualToAnchor(passwdlabel.bottomAnchor, constant: 2).active = true
-        passwdTextField.leftAnchor.constraintEqualToAnchor(view.leftAnchor).active = true
-        passwdTextField.rightAnchor.constraintEqualToAnchor(view.rightAnchor).active = true
-
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-//        loginButton.topAnchor.constraintEqualToAnchor(passwdTextField.bottomAnchor, constant: 15).active = true
-        loginButton.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-        */
         
         loginButton.addTarget(self, action: #selector(buttonPressed), forControlEvents: UIControlEvents.TouchUpInside)
+
+        spinner.hidesWhenStopped = true
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+        spinner.centerYAnchor.constraintEqualToAnchor(loginButton.centerYAnchor, constant: 35).active = true        // button centerY off by 35
 
         errorlabel.hidden = true
     }
@@ -120,16 +93,29 @@ class LoginViewController: UIViewController {
         if (user.isEmpty || passwd.isEmpty) {
             self.toggleError(false)
         } else {
+            showSpinner()
             HeiaHandler.instance.loginWith(emailTextField.text!, passwd: passwdTextField.text!) { success in
                 if (success) {
                     self.toggleError(true)
                     self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
                 } else {
                     self.toggleError(false)
-                    print("This is bullshit")
                 }
+                self.hideSpinner()
             }
         }
+    }
+    
+    // scroll login button to view on small screen: NSNotificationCenter.defaultCenter...
+    
+    func showSpinner() {
+        spinner.startAnimating()
+        loginButton.hidden = true
+    }
+
+    func hideSpinner() {
+        spinner.stopAnimating()
+        loginButton.hidden = false
     }
     
     func toggleError(hidden: Bool) {

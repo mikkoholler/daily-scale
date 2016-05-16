@@ -22,6 +22,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     let weightTextLabel = UILabel()
     let weightLabel = UILabel()
     let weightButton = UIButton()
+    let spinner = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +31,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
         view.addSubview(weightInputView)
         view.addSubview(weightTableView)
+        view.addSubview(spinner)
 
         weightInputView.backgroundColor = UIColor.whiteColor()
 
@@ -75,7 +77,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
         weightButton.addTarget(self, action: #selector(buttonPressed), forControlEvents: UIControlEvents.TouchUpInside)
 
-
         weightTableView.backgroundColor = UIColor.whiteColor()
 //        feedTableView.separatorStyle = .None
         weightTableView.rowHeight = UITableViewAutomaticDimension
@@ -90,6 +91,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         weightTableView.delegate = self
         weightTableView.dataSource = self
+        
+        spinner.hidesWhenStopped = true
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+        spinner.topAnchor.constraintEqualToAnchor(weightTableView.topAnchor, constant: 15).active = true
         
         healthHandler.authorizeHealthKit()
         
@@ -150,13 +156,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
 
     func getData() {
+        spinner.startAnimating()
         HeiaHandler.instance.getWeights() { (weights, errorcode) in
-            if (errorcode > 200) {
-                print("Not authorized")
+            if (errorcode == 401) {
                 self.showLogin()
+            } else if (errorcode > 200) {
+                let alert = UIAlertController(title: "Connection not available", message: "The Internet is not available right now. Please try later again.", preferredStyle: .Alert)
+                let action = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                alert.addAction(action)
+                self.presentViewController(alert, animated: true, completion: nil)
+                self.spinner.stopAnimating()
             } else {
                 self.weights = weights
                 self.showData()
+                self.spinner.stopAnimating()
             }
         }
     }
